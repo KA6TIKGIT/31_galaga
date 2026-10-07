@@ -1,6 +1,10 @@
 import math
 import random
 import pygame
+import colorsys  # add with the other imports
+
+CURRENT_WAVE = 1
+BANNER_UNTIL = 0  # pygame tick (ms) until which the banner shows
 
 WIDTH, HEIGHT = 600, 700
 PLAYER_Y, PLAYER_SPEED, SHIP_GAP = HEIGHT - 50, 300, 30
@@ -16,7 +20,13 @@ def bezier(p0, p1, p2, p3, t):
 
 def enemy_tint(kind):
     """Return an (r, g, b) colour override for an enemy kind, or None for the default."""
-    pass
+    if CURRENT_WAVE <= 1:
+        return None
+    r, g, b = ENEMY_COLORS[kind]
+    h, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
+    h = (h + (CURRENT_WAVE - 1) * 0.15) % 1.0
+    r, g, b = colorsys.hsv_to_rgb(h, s, v)
+    return (int(r * 255), int(g * 255), int(b * 255))
 
 
 def on_wave_start(wave):
